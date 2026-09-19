@@ -1,2 +1,0 @@
-import { InnerPage } from "@/components/biduko/inner-page";
-export default function PricingPage(){return <InnerPage eyebrow="03 / Pricing" title="Scope first. Clear proposal second." intro="We are not forcing every business into a fixed box. Pricing follows the experience, platform and support your project actually needs." items={["Discovery & scope","Design & experience","Development & launch","Maintenance & support"]}/>}

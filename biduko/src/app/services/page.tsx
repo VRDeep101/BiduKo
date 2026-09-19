@@ -1,2 +1,0 @@
-import { InnerPage } from "@/components/biduko/inner-page";
-export default function ServicesPage(){return <InnerPage eyebrow="01 / Services" title="We build the whole digital side." intro="From the first interaction to the technical details after launch, BiduKo can own the experience end to end." items={["Websites & digital experiences","E-commerce systems","Brand & visual systems","Custom platforms","Launch & technical management","Ongoing maintenance"]}/>}
