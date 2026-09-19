@@ -21,6 +21,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { collaborators, process, projects, services } from "./site-data";
 import { GlassShineCard } from "@/components/ui/glass-shine-card";
 
+const SERVICE_WORDS = ["Web Experience", "Digital Presence", "Brand System"] as const;
+
 gsap.registerPlugin(ScrollTrigger);
 
 interface SectionLabelProps { label: string; tone?: "default" | "inverse"; }
@@ -35,6 +37,9 @@ export function SectionLabel({ label, tone = "default" }: SectionLabelProps) {
 }
 
 function useScrollReveal(selector: string, trigger: RefObject<HTMLElement | null>, options: gsap.TweenVars = {}) {
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
+
   useEffect(() => {
     if (!trigger.current) return;
     const ctx = gsap.context(() => {
@@ -47,7 +52,7 @@ function useScrollReveal(selector: string, trigger: RefObject<HTMLElement | null
           stagger: 0.08,
           ease: "power3.out",
           scrollTrigger: { trigger: trigger.current, start: "top 82%", once: true },
-          ...options,
+          ...optionsRef.current,
         });
       });
       return () => mm.revert();
@@ -95,14 +100,53 @@ export function Statement() {
 
 export function ServicesSection() {
   const ref = useRef<HTMLElement>(null);
-  const [activeWord, setActiveWord] = useState(0);
-  const serviceWords = ["Web Experience", "Digital Presence", "Brand System"];
+  const [displayedWord, setDisplayedWord] = useState("");
+  const serviceWords = SERVICE_WORDS;
   useScrollReveal(".service-row", ref, { x: 90, y: 0, rotateX: 5 });
 
   useEffect(() => {
-    const id = window.setInterval(() => setActiveWord((value) => (value + 1) % serviceWords.length), 2600);
-    return () => window.clearInterval(id);
-  }, []);
+    let cancelled = false;
+    let timer: number | undefined;
+    let wordIndex = 0;
+
+    const typeAndErase = () => {
+      if (cancelled) return;
+      const word = serviceWords[wordIndex];
+      let cursor = 0;
+
+      const typeNext = () => {
+        if (cancelled) return;
+        setDisplayedWord(word.slice(0, cursor));
+        cursor += 1;
+        if (cursor <= word.length) {
+          timer = window.setTimeout(typeNext, 72);
+        } else {
+          // Let the complete word breathe before erasing it letter-by-letter.
+          timer = window.setTimeout(eraseNext, 1250);
+        }
+      };
+
+      const eraseNext = () => {
+        if (cancelled) return;
+        cursor -= 1;
+        setDisplayedWord(word.slice(0, Math.max(0, cursor)));
+        if (cursor > 0) {
+          timer = window.setTimeout(eraseNext, 42);
+        } else {
+          wordIndex = (wordIndex + 1) % serviceWords.length;
+          timer = window.setTimeout(typeAndErase, 280);
+        }
+      };
+
+      typeNext();
+    };
+
+    typeAndErase();
+    return () => {
+      cancelled = true;
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
+  }, [serviceWords]);
 
   return (
     <section ref={ref} id="services" className="services section-shell">
@@ -110,7 +154,7 @@ export function ServicesSection() {
       <div className="section-heading-row services-intro">
         <div>
           <p className="section-kicker">Built around the outcome, not the deliverable.</p>
-          <h2 className="services-headline"><span>Everything your</span><span className="service-word-swap" key={activeWord} aria-live="polite">{serviceWords[activeWord]}</span><span>requires</span></h2>
+          <h2 className="services-headline"><span>Everything your</span><span className="service-word-swap" aria-live="polite">{displayedWord}</span><span>requires</span></h2>
         </div>
         <div className="services-system">
           <div className="services-system-track" aria-hidden="true"><span /><span /><span /><span /></div>
@@ -141,8 +185,10 @@ export function ProjectsSection() {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.fromTo(".selected-work-transition", { scale: .2, opacity: 0, x: "55vw", rotate: 18 }, { scale: 1, opacity: 1, x: 0, rotate: 0, ease: "power3.out", scrollTrigger: { trigger: ref.current, start: "top 72%", end: "top 25%", scrub: 1 } });
-        gsap.from(".project-card", { y: 70, opacity: 0, duration: .8, stagger: .12, ease: "power3.out", scrollTrigger: { trigger: ".projects-grid", start: "top 82%", once: true } });
+        gsap.fromTo(".project-card", { y: 70, opacity: 0, rotateX: 6 }, {
+          y: 0, opacity: 1, rotateX: 0, duration: .85, stagger: .1, ease: "power3.out",
+          scrollTrigger: { trigger: ".projects-grid", start: "top 82%", once: true },
+        });
       });
       return () => mm.revert();
     }, ref);
@@ -151,8 +197,10 @@ export function ProjectsSection() {
 
   return (
     <section ref={ref} id="projects" className="projects section-shell">
-      <SectionLabel label="Selected work" />
-      <div className="selected-work-transition" aria-hidden="true"><MousePointer2 size={28} /><span>SELECTED WORK</span></div>
+      <button type="button" className="selected-work-transition" aria-label="Selected work">
+        <MousePointer2 size={28} />
+        <span>SELECTED WORK</span>
+      </button>
       <div className="section-heading-row projects-head">
         <div><p className="section-kicker">A few worlds we have shipped.</p><h2>Built to be<br /><span>remembered.</span></h2></div>
       </div>
@@ -193,31 +241,74 @@ export function ProcessSection() {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const cards = gsap.utils.toArray<HTMLElement>(".process-card");
         const section = ref.current!;
-        const setCardFocus = () => {
-          gsap.set(cards, {
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            xPercent: -50,
-            yPercent: -50,
-            x: window.innerWidth * 1.15,
-            opacity: 0,
-            scale: .88,
-            filter: "blur(12px)",
+        const track = section.querySelector<HTMLElement>(".process-track");
+        const cards = gsap.utils.toArray<HTMLElement>(".process-card");
+        const intro = section.querySelectorAll<HTMLElement>(".process-intro, .process-content > .section-label");
+        if (!track || cards.length < 2) return;
+
+        const revealPoint = 0.46;
+        const focusCards = (cardsAreVisible = false) => {
+          const center = window.innerWidth / 2;
+          cards.forEach((card) => {
+            const rect = card.getBoundingClientRect();
+            const distance = Math.abs(center - (rect.left + rect.width / 2));
+            const normalized = Math.min(distance / (window.innerWidth * .62), 1);
+            gsap.set(card, {
+              scale: 1 - normalized * .08,
+              filter: `blur(${normalized * 4.5}px)`,
+              ...(cardsAreVisible ? { opacity: .52 + (1 - normalized) * .48 } : {}),
+            });
           });
         };
-        setCardFocus();
-        const tl = gsap.timeline({ scrollTrigger: { trigger: section, start: "top top", end: () => `+=${window.innerHeight * 8.8}`, scrub: 1, pin: true, anticipatePin: 1, invalidateOnRefresh: true } });
-        cards.forEach((card, index) => {
-          tl.to(card, { x: 0, opacity: 1, scale: 1, filter: "blur(0px)", duration: .15, ease: "power3.out" })
-            .to({}, { duration: .08 })
-            .to(card, { x: -window.innerWidth * 1.18, opacity: 0, scale: .9, filter: "blur(14px)", duration: .18, ease: "power2.in" });
-          if (index === cards.length - 1) {
-            tl.to({}, { duration: .08 });
-          }
+
+        // Keep the card rail completely out of the visual layer while the
+        // "Six moves" statement is being read. The cards only become visible
+        // after that intro has finished its blur/exit phase.
+        gsap.set(cards, { autoAlpha: 0, scale: .92, filter: "blur(12px)" });
+        gsap.set(intro, { autoAlpha: 1, filter: "blur(0px)", y: 0 });
+        gsap.set(track, { x: window.innerWidth * .16 });
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: () => `+=${Math.max(window.innerHeight * 6.4, track.scrollWidth * 1.55)}`,
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const cardsVisible = self.progress >= revealPoint;
+              focusCards(cardsVisible);
+              gsap.to(section.querySelector(".process-bg"), {
+                filter: cardsVisible ? "blur(11px)" : "blur(0px)",
+                opacity: cardsVisible ? 0.16 : 0.78,
+                duration: 0.18,
+                overwrite: true,
+              });
+            },
+          },
         });
+
+        // The first part is intentionally a quiet reading window for the
+        // headline. Then the headline exits/softens completely. Only after
+        // that point do the six cards enter as a horizontal sequence.
+        tl.to({}, { duration: .34 })
+          .to(intro, { autoAlpha: 0, filter: "blur(14px)", y: -28, duration: .12, ease: "power2.in" })
+          .to(cards, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: .12, stagger: .012, ease: "power3.out" }, ">")
+          .to(track, { x: 0, duration: .10, ease: "power3.out" }, "<")
+          .to(track, { x: () => {
+            const last = cards[cards.length - 1];
+            const rect = last.getBoundingClientRect();
+            return window.innerWidth / 2 - (rect.left + rect.width / 2);
+          }, duration: .72, ease: "none" });
+
+        // Do not run the focus pass before the reveal: it would overwrite the
+        // hidden cards' opacity and make them flash in during the Six Moves intro.
+        focusCards(false);
+        gsap.set(section.querySelector(".process-bg"), { filter: "blur(0px)", opacity: 0.78 });
+        return () => tl.kill();
       });
       return () => mm.revert();
     }, ref);
@@ -229,10 +320,10 @@ export function ProcessSection() {
   const accents = ["violet", "fuchsia", "indigo", "purple", "violet", "fuchsia"] as const;
   return (
     <section ref={ref} className="process section-shell">
-      <div className="process-bg" aria-hidden="true"><div className="process-grid" /><div className="process-orbit" /><div className="process-orbit process-orbit--two" /><div className="process-star process-star--one"><Sparkles size={18} /></div><div className="process-star process-star--two"><Sparkles size={12} /></div></div>
+      <div className="process-bg" aria-hidden="true"><div className="process-grid" /><div className="process-orbit" /><div className="process-orbit process-orbit--two" /><div className="process-star process-star--two"><Sparkles size={12} /></div></div>
       <div className="process-content">
         <SectionLabel label="How we work" tone="inverse" />
-        <div className="process-intro"><div><p className="process-kicker">A sequence, not a hand-off.</p><h2>Six moves.<br /><span>One seamless build.</span></h2></div><p className="process-intro-copy">Discovery, direction, design, build, launch and care — one connected system from first idea to live experience.</p></div>
+        <div className="process-intro"><div><p className="process-kicker">A sequence, not a hand-off.</p><h2>Six moves.<br /><span>One seamless build.</span></h2></div></div>
         <div className="process-track">
           {process.map(([title, copy], index) => <GlassShineCard key={title} className={`process-card ${index === 4 ? "process-card--launch" : ""}`} eyebrow={labels[index]} title={title} description={copy} accent={accents[index]}><ProcessVisual type={visualTypes[index]} /></GlassShineCard>)}
         </div>
@@ -248,31 +339,39 @@ export function LaunchScene() {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const rocket = ".launch-rocket-wrap";
-        const tl = gsap.timeline({ scrollTrigger: { trigger: ref.current, start: "top top", end: "+=420%", scrub: 1, pin: true, anticipatePin: 1 } });
-        gsap.set(".launch-card", { opacity: 0, scale: .9, y: 90, filter: "blur(12px)" });
-        gsap.set(".launch-rocket-wrap", { y: window.innerHeight * .62, opacity: 0, scale: .7 });
-        gsap.set(".launch-words", { opacity: 1 });
-        gsap.set(".launch-ship-title, .launch-word", { opacity: 0, x: -50, filter: "blur(12px)" });
-        gsap.set(".launch-smoke", { opacity: 0, scale: .2 });
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: ref.current,
+            start: "top top",
+            end: "+=360%",
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
 
-        tl.to(".launch-rocket-wrap", { y: 0, opacity: 1, scale: 1, duration: .2, ease: "power3.out" })
-          .to(".launch-ship-title", { opacity: 1, x: 0, filter: "blur(0px)", duration: .16, ease: "power3.out" }, "+=.05")
-          .to(".launch-word", { opacity: 1, x: 0, filter: "blur(0px)", duration: .1, stagger: .06, ease: "power3.out" }, "+=.06")
-          .to(".launch-rocket-wrap", { y: -window.innerHeight * .95, scale: .82, duration: .28, ease: "power2.in" }, "+=.18")
-          .to(".launch-ship-title, .launch-word", { opacity: 0, x: -45, filter: "blur(10px)", duration: .12 }, "<")
-          .to(".launch-smoke", { opacity: 1, scale: 8.5, duration: .24, ease: "power2.out" }, "<.08")
-          .to(".launch-stage", { filter: "blur(8px)", duration: .14 }, "<.1")
-          .to(rocket, { opacity: 0, duration: .05 }, "<")
-          .to(".launch-smoke", { scale: 14, opacity: 1, duration: .15 }, "+=.02");
+        gsap.set(".launch-rocket-wrap", { y: window.innerHeight * .62, opacity: 0, scale: .72 });
+        gsap.set(".launch-word", { opacity: 0, x: 70, filter: "blur(12px)" });
+        gsap.set(".launch-smoke", { opacity: 0, scale: .15 });
 
-        gsap.to(".launch-flame", { scaleY: 1.35, scaleX: .82, opacity: .85, repeat: -1, yoyo: true, duration: .13, ease: "sine.inOut" });
-        gsap.to(".launch-smoke .smoke-puff", { y: -35, opacity: 0, stagger: .1, repeat: -1, duration: 1.1, ease: "power1.out" });
+        tl.to(".launch-rocket-wrap", { y: 0, opacity: 1, scale: 1, duration: .16, ease: "power3.out" })
+          .to(".launch-word", { opacity: 1, x: 0, filter: "blur(0px)", duration: .09, stagger: .055, ease: "power3.out" }, "+=.05")
+          .to(".launch-rocket-wrap", { y: -window.innerHeight * 1.05, scale: .82, duration: .23, ease: "power2.in" }, "+=.16")
+          .to(".launch-word", { opacity: 0, filter: "blur(10px)", duration: .11, ease: "power2.in" }, "<")
+          .to(".launch-smoke", { opacity: 1, scale: 8.5, duration: .2, ease: "power2.out" }, "<.06")
+          .to(".launch-stage", { filter: "blur(12px)", duration: .12, ease: "power2.in" }, "<.08")
+          .to(".launch-rocket-wrap", { opacity: 0, duration: .04 }, "<")
+          .to(".launch-smoke", { scale: 18, opacity: 1, duration: .18, ease: "power2.out" }, "+=.02");
+
+        gsap.to(".launch-flame", { scaleY: 1.35, scaleX: .82, opacity: .86, repeat: -1, yoyo: true, duration: .13, ease: "sine.inOut" });
+        gsap.to(".smoke-puff", { y: -35, opacity: 0, stagger: .1, repeat: -1, duration: 1.1, ease: "power1.out" });
       });
       return () => mm.revert();
     }, ref);
     return () => ctx.revert();
   }, []);
+
   return (
     <section ref={ref} className="launch-scene">
       <div className="launch-stage">
@@ -284,8 +383,7 @@ export function LaunchScene() {
           <span className="launch-flame" />
           <span className="launch-trail" />
         </div>
-        <div className="launch-words" aria-hidden="true">
-          <span className="launch-ship-title">Ship it.<br /><em>Then let it move.</em></span>
+        <div className="launch-points" aria-hidden="true">
           <span className="launch-word">Best UI/UX</span>
           <span className="launch-word">Motion graphics</span>
           <span className="launch-word">Scroll storytelling</span>
@@ -297,7 +395,6 @@ export function LaunchScene() {
     </section>
   );
 }
-
 export function CollaborationWall() {
   const ref = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -309,7 +406,7 @@ export function CollaborationWall() {
     }, ref);
     return () => ctx.revert();
   }, []);
-  return <section ref={ref} className="collab section-shell"><SectionLabel label="Brand collaborations" /><div className="collab-title"><p className="section-kicker collab-energy">The kind of energy we like to work around.</p><h2>Good company<br /><span>moves together.</span></h2></div><div className="brand-wall">{collaborators.map((brand, i) => <span key={`${brand}-${i}`}>{brand}</span>)}</div></section>;
+  return <section ref={ref} className="collab section-shell"><SectionLabel label="Brand collaborations" /><div className="collab-title"><p className="section-kicker collab-energy">The kind of energy we like to work around.</p><h2>Good company<br /><span>moves together.</span></h2></div><div className="brand-wall" aria-label="Selected collaborators"><div className="brand-wall-track">{[...collaborators, ...collaborators].map((brand, i) => <span key={`${brand}-${i}`}>{brand}</span>)}</div></div></section>;
 }
 
 export function AboutSection() {

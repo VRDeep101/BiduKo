@@ -1,6 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -221,7 +219,7 @@ button { font: inherit; color: inherit; }
 .project-preview { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; padding: 1.15rem; border: 1px solid rgba(244,241,236,.18); background: rgba(9,9,11,.84); backdrop-filter: blur(24px); border-radius: 18px; z-index: 7; display: flex; justify-content: space-between; align-items: end; gap: 1rem; animation: preview-in .45s cubic-bezier(.16,1,.3,1) both; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
 .project-preview p { max-width: 560px; margin: 0; color: rgba(244,241,236,.62); font-size: .75rem; line-height: 1.6; }
 .project-preview a { display: flex; align-items: center; gap: .35rem; font-size: .68rem; white-space: nowrap; color: var(--accent-2); }
-.center-link { display: flex; justify-content: center; margin-top: 3.2rem; }
+.center-link { display: flex; justify-content: center; margin-top: 5.5rem; margin-bottom: 1.5rem; }
 @keyframes preview-in{from{opacity:0;transform:translateY(22px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes noise-shift{0%{transform:translate(0,0)}25%{transform:translate(2%,-1%)}50%{transform:translate(-1%,2%)}75%{transform:translate(1%,1%)}100%{transform:translate(-2%,-1%)}}
 
@@ -670,7 +668,7 @@ button { font: inherit; color: inherit; }
   .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .glass-shine-card.process-card { width: 350px; min-width: 350px; }
   .process-track { padding-left: calc(50vw - 175px); padding-right: calc(50vw - 175px); }
-  .launch-words { left: calc(50% + 240px); width: 240px; }
+  .launch-points { right: 7vw; width: 240px; }
 }
 
 @media (max-width: 800px) {
@@ -713,7 +711,7 @@ button { font: inherit; color: inherit; }
 .process-content { height: 100%; }
 .process-intro { margin-bottom: 2rem; }
 .process-intro h2 { font-size: clamp(4rem, 7vw, 7.8rem); }
-.process-intro-copy { font-size: .9rem; max-width: 420px; }
+.process-intro-copy { display:none; }
 .process-track {
   position: relative;
   width: max-content;
@@ -723,6 +721,8 @@ button { font: inherit; color: inherit; }
   will-change: transform;
 }
 .glass-shine-card.process-card {
+  opacity: 0;
+  visibility: hidden;
   width: 440px;
   min-width: 440px;
   height: min(58vh, 560px);
@@ -830,7 +830,7 @@ button { font: inherit; color: inherit; }
   left: calc(50% - min(600px, 46vw) / 2 - 210px);
   top: 50%;
   z-index: 8;
-  font: 800 clamp(1.3rem, 2vw, 2rem) var(--font-display);
+  font: 800 clamp(2rem, 3vw, 3.1rem) var(--font-display);
   letter-spacing: -.04em;
   color: var(--foreground);
   opacity: 0;
@@ -842,7 +842,7 @@ button { font: inherit; color: inherit; }
   gap: .85rem;
 }
 .launch-word {
-  font-size: clamp(1.3rem, 2vw, 2rem);
+  font-size: clamp(2rem, 3vw, 3.1rem);
   line-height: 1.05;
   text-shadow: 0 0 25px rgba(155,92,255,.18);
 }
@@ -871,7 +871,7 @@ button { font: inherit; color: inherit; }
   width: calc(34px + (var(--i) * 3px));
   height: calc(34px + (var(--i) * 2px));
   left: calc(50% + (var(--i) * 13px) - 85px);
-  top: calc(50% + ((var(--i) % 5) * 18px) - 40px);
+  top: calc(50% + (var(--i) * 5px) - 40px);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(226,220,235,.62), rgba(86,69,111,.38) 45%, transparent 72%);
   filter: blur(9px);
@@ -906,8 +906,8 @@ button { font: inherit; color: inherit; }
   .glass-shine-card.process-card { width: 400px; min-width: 400px; }
   .process-track { padding-left: calc(50vw - 200px); padding-right: calc(50vw - 200px); }
   .launch-card { width: min(560px, 50vw); }
-  .launch-words { left: calc(50% + 300px); width: 260px; }
-  .launch-ship-line { left: 7vw; }
+  .launch-points { right: 7vw; width: 260px; }
+  .launch-copy { left: 7vw; }
 }
 
 @media (max-width: 800px) {
@@ -919,9 +919,9 @@ button { font: inherit; color: inherit; }
   .process-track { padding-left: 11vw; padding-right: 11vw; gap: 1rem; }
   .launch-card { width: 78vw; min-height: 420px; }
   .launch-card h2 { font-size: clamp(3.8rem, 14vw, 6rem); }
-  .launch-words { left: 8vw; right: 8vw; top: auto; bottom: 8vh; width: auto; display: flex; flex-wrap: wrap; }
+  .launch-points { left: 8vw; right: 8vw; top: auto; bottom: 8vh; width: auto; display: flex; flex-wrap: wrap; }
   .launch-word { font-size: 1.05rem; }
-  .launch-ship-line { left: 8vw; top: 12vh; }
+  .launch-copy { left: 8vw; top: 12vh; }
   .launch-collab-title { white-space: normal; padding: 0 8vw; }
 }
 
@@ -1179,17 +1179,14 @@ button { font: inherit; color: inherit; }
 /* Once launch starts, keep the environment soft so the rocket and side copy own the frame. */
 .launch-stage > .launch-grid,
 .launch-stage > .launch-stars,
-.launch-stage > .launch-glow,
-.launch-stage > .launch-card,
-.launch-stage > .launch-card-orbit {
-  filter: blur(5px);
-  opacity: .35;
+.launch-stage > .launch-glow {
+  filter: none;
+  opacity: .5;
 }
 .launch-stage > .launch-rocket-wrap,
-.launch-stage > .launch-ship-line,
-.launch-stage > .launch-words,
-.launch-stage > .launch-smoke,
-.launch-stage > .launch-collab-title { filter: none; }
+.launch-stage > .launch-copy,
+.launch-stage > .launch-points,
+.launch-stage > .launch-smoke { filter: none; }
 
 /* v7 stable three-line service headline: only the middle line changes. */
 .services-headline {
@@ -1257,7 +1254,7 @@ button { font: inherit; color: inherit; }
 .services-system p { margin:.95rem 0 0; max-width:470px; color:var(--muted-foreground); font-size:.82rem; line-height:1.7; }
 
 /* Selected work transition and CTA. */
-.selected-work-transition { position:relative; width:min(460px,50vw); height:120px; margin:-1rem auto 3rem; display:flex; align-items:center; justify-content:center; gap:1rem; color:var(--accent-2); border:1px solid rgba(214,108,255,.18); border-radius:999px; background:rgba(155,92,255,.035); box-shadow:0 0 70px rgba(155,92,255,.06); }
+.selected-work-transition { appearance:none; cursor:pointer; font:inherit; position:relative; width:min(460px,50vw); height:120px; margin:-1rem auto 3rem; display:flex; align-items:center; justify-content:center; gap:1rem; color:var(--accent-2); border:1px solid rgba(214,108,255,.18); border-radius:999px; background:rgba(155,92,255,.035); box-shadow:0 0 70px rgba(155,92,255,.06); }
 .selected-work-transition span { font:800 clamp(1rem,2vw,1.5rem) var(--font-display); letter-spacing:.12em; }
 .selected-work-transition svg { filter:drop-shadow(0 0 14px rgba(214,108,255,.6)); }
 .projects-cta { position:relative; display:inline-flex; align-items:center; gap:.8rem; min-width:220px; justify-content:center; padding:1rem 1.2rem; border:1px solid rgba(214,108,255,.34); border-radius:14px; background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(155,92,255,.045)); overflow:hidden; box-shadow:inset 0 1px rgba(255,255,255,.07),0 18px 50px rgba(0,0,0,.16); }
@@ -1269,22 +1266,21 @@ button { font: inherit; color: inherit; }
 
 /* Process background stays ambient while foreground cards own focus. */
 .process-bg { filter:blur(2px); opacity:.72; }
-.process-track::before { content:""; position:fixed; inset:0; background:rgba(8,8,12,.35); backdrop-filter:blur(8px); pointer-events:none; z-index:-1; }
 .glass-shine-card.process-card { box-shadow:0 30px 110px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.07); }
 
 /* Rocket: clean stage, no old launch card or stray ship line. */
-.launch-card,.launch-ship-line { display:none !important; }
+.launch-card,.launch-ship-line,.launch-collab-title { display:none !important; }
 .launch-stage { background:#08080c; }
 .launch-stage::after { content:""; position:absolute; inset:0; background:radial-gradient(circle at 50% 52%,rgba(155,92,255,.12),transparent 32%); pointer-events:none; }
 .launch-words { left:calc(50% - min(600px,46vw) / 2 - 10px); top:50%; width:min(520px,40vw); transform:translate(-100%,-50%); display:grid; gap:.75rem; }
-.launch-ship-title { display:block; color:#f4f1ec; font:900 clamp(3.5rem,6vw,6.8rem)/.78 var(--font-display); letter-spacing:-.09em; margin-bottom:1rem; }
+.launch-ship-title { display:block; color:#f4f1ec; font:900 clamp(2.8rem,4vw,4.6rem)/.86 var(--font-display); letter-spacing:-.09em; margin-bottom:1rem; }
 .launch-ship-title em { color:var(--accent-2); font-style:normal; }
 .launch-word { font-size:clamp(1.05rem,1.65vw,1.45rem); }
 .launch-smoke { z-index:30; width:160px; height:160px; top:70%; }
 .launch-smoke .smoke-puff { background:radial-gradient(circle,rgba(226,220,235,.55),rgba(86,69,111,.3) 45%,transparent 72%); filter:blur(12px); }
 
 /* Collaboration: immediate continuation after smoke. */
-.collab { padding-top:clamp(5rem,8vw,8rem); }
+.collab { padding-top:clamp(2rem,4vw,4rem); }
 .collab-energy { display:inline-flex; padding:.7rem 1rem; border:1px solid rgba(214,108,255,.2); border-radius:999px; background:rgba(155,92,255,.035); box-shadow:0 0 45px rgba(155,92,255,.07); }
 .collab-title h2 { margin-bottom:4rem; }
 .brand-wall { animation:none; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); width:100%; min-width:0; }
@@ -1315,7 +1311,8 @@ button { font: inherit; color: inherit; }
   .statement-card { width:100%; margin-top:7vh; }
   .services-system { width:100%; margin-top:2rem; }
   .selected-work-transition { width:90%; }
-  .launch-words { left:1.1rem; right:1.1rem; width:auto; transform:none; top:auto; bottom:8vh; }
+  .launch-copy { left:1.1rem; right:1.1rem; width:auto; top:18vh; transform:none; }
+  .launch-points { left:1.1rem; right:1.1rem; width:auto; top:auto; bottom:8vh; transform:none; }
   .launch-ship-title { font-size:clamp(2.8rem,13vw,5rem); }
   .launch-word { font-size:1rem; }
   .brand-wall { grid-template-columns:repeat(2,minmax(0,1fr)); }
@@ -1331,4 +1328,391 @@ button { font: inherit; color: inherit; }
 @media (max-width:800px) {
   .process-track { height:560px; }
   .glass-shine-card.process-card { width:82vw; min-width:82vw; height:560px; min-height:560px; }
+}
+
+
+/* ===== BiduKo v8 stability + launch choreography ===== */
+/* The process intro stays crisp while the six cards tell their story. */
+.process-track::before { display:none !important; }
+.process-bg { filter:none; opacity:.78; }
+.process-intro,
+.process-content > .section-label { opacity:1; filter:none; transform:none; }
+
+/* Selected work is a single interactive transition control — no duplicate text label. */
+.selected-work-transition {
+  appearance:none;
+  -webkit-appearance:none;
+  cursor:pointer;
+  font:inherit;
+  position:relative;
+  z-index:4;
+}
+.selected-work-transition:focus-visible { outline:2px solid var(--accent-2); outline-offset:6px; }
+
+/* Launch: clean background first, story on the left, capability stack on the right. */
+.launch-scene { background:#08080c; }
+.launch-stage::after {
+  background:radial-gradient(circle at 50% 52%, rgba(155,92,255,.08), transparent 34%);
+}
+.launch-stage > .launch-grid,
+.launch-stage > .launch-stars,
+.launch-stage > .launch-glow {
+  filter:none !important;
+  opacity:.42 !important;
+}
+.launch-copy {
+  position:absolute !important;
+  z-index:9;
+  left:clamp(1.5rem,7vw,7rem) !important;
+  top:50% !important;
+  width:min(520px,38vw) !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:translateY(-50%) !important;
+  pointer-events:none;
+}
+.launch-ship-title {
+  display:block;
+  opacity:0;
+  color:#f4f1ec;
+  font:900 clamp(4.6rem,7.4vw,8.6rem)/.78 var(--font-display);
+  letter-spacing:-.09em;
+  text-shadow:0 0 36px rgba(155,92,255,.12);
+}
+.launch-ship-title em { color:var(--accent-2); font-style:normal; }
+.launch-points {
+  position:absolute;
+  z-index:9;
+  right:clamp(1.5rem,6vw,6rem);
+  top:50%;
+  width:min(520px,34vw);
+  transform:translateY(-50%);
+  display:grid;
+  gap:.8rem;
+  pointer-events:none;
+}
+.launch-word {
+  display:block;
+  opacity:0;
+  color:rgba(244,241,236,.82);
+  font:800 clamp(2.6rem,3.8vw,4rem)/1.02 var(--font-display);
+  letter-spacing:-.045em;
+  border-left:2px solid rgba(214,108,255,.5);
+  padding-left:.8rem;
+  text-shadow:0 0 25px rgba(155,92,255,.18);
+}
+.launch-word:nth-child(1),
+.launch-word:nth-child(5) { color:var(--accent-2); }
+.launch-smoke {
+  z-index:30;
+  width:160px;
+  height:160px;
+  top:70%;
+}
+.launch-stage.is-smoke-transition { filter:blur(12px); }
+
+@media (max-width:800px) {
+  .launch-copy {
+    left:1.1rem !important;
+    right:1.1rem !important;
+    width:auto !important;
+    top:18vh !important;
+    transform:none !important;
+  }
+  .launch-ship-title { font-size:clamp(2.8rem,13vw,5rem); }
+  .launch-points {
+    left:1.1rem;
+    right:1.1rem;
+    width:auto;
+    top:auto;
+    bottom:8vh;
+    transform:none;
+    gap:.45rem;
+  }
+  .launch-word { font-size:1rem; }
+}
+
+
+/* ===== BiduKo v9.1 process + selected-work correction ===== */
+.projects .selected-work-transition { margin-bottom: 4.5rem; }
+.projects .center-link { margin-top: 6rem; position: relative; z-index: 4; }
+
+/* Intro is clean first; cards are revealed only after the intro softens. */
+.process-intro,
+.process-content > .section-label { will-change: transform, opacity, filter; }
+.process-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  height: auto;
+  gap: 2.2rem;
+  padding-left: calc(50vw - 220px);
+  padding-right: calc(50vw - 220px);
+  transform: translate3d(0, -50%, 0);
+}
+.glass-shine-card.process-card {
+  opacity: 0;
+  visibility: hidden;
+  position: relative;
+  left: auto;
+  top: auto;
+  flex: 0 0 440px;
+  width: 440px;
+  min-width: 440px;
+  height: min(58vh, 560px);
+  min-height: 500px;
+}
+
+@media (max-width: 1100px) {
+  .process-track { padding-left: calc(50vw - 200px); padding-right: calc(50vw - 200px); }
+  .glass-shine-card.process-card { flex-basis: 400px; width: 400px; min-width: 400px; }
+}
+@media (max-width: 800px) {
+  .process-track { padding-left: calc(50vw - 39vw); padding-right: calc(50vw - 39vw); gap: 1rem; }
+  .glass-shine-card.process-card { flex-basis: 78vw; width: 78vw; min-width: 78vw; height: 500px; min-height: 500px; }
+}
+
+/* ===== Final launch + collaboration motion pass ===== */
+.launch-copy {
+  position: absolute;
+  left: 6.5vw;
+  top: 50%;
+  z-index: 9;
+  width: min(500px, 32vw);
+  transform: translateY(-50%);
+}
+.launch-ship-title {
+  display: block;
+  font: 900 clamp(3.4rem, 5.7vw, 7rem)/.78 var(--font-display);
+  letter-spacing: -.075em;
+  color: var(--foreground);
+  text-shadow: 0 0 42px rgba(155,92,255,.16);
+}
+.launch-ship-title em { color: var(--accent-2); font-style: normal; }
+.launch-points {
+  left: auto;
+  right: 6.5vw;
+  top: 50%;
+  width: min(520px, 29vw);
+  gap: 1rem;
+  transform: translateY(-50%);
+}
+.launch-word {
+  font-size: clamp(2rem, 3.1vw, 3.8rem);
+  line-height: 1;
+  padding-left: 1rem;
+  border-left-width: 2px;
+  letter-spacing: -.045em;
+}
+.launch-word::before {
+  width: 9px;
+  height: 9px;
+  margin-right: .75rem;
+}
+
+/* The old collaborator treatment was a moving editorial ticker. Restore it:
+   one continuous line, right-to-left, with no grid break between logos. */
+.brand-wall {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-width: 0;
+  display: block;
+  border-top: 1px solid rgba(244,241,236,.1);
+  border-bottom: 1px solid rgba(244,241,236,.1);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.brand-wall-track {
+  display: flex;
+  width: max-content;
+  min-width: max-content;
+  animation: brand-wall-marquee 30s linear infinite;
+  will-change: transform;
+}
+.brand-wall span {
+  flex: 0 0 auto;
+  display: block;
+  min-height: 0;
+  padding: 1.15rem 3.5rem;
+  border: 0;
+  border-right: 1px solid rgba(244,241,236,.08);
+  font-size: clamp(3.4rem, 6vw, 7rem);
+  line-height: 1;
+  color: rgba(244,241,236,.28);
+}
+.brand-wall span:nth-child(3n) { color: var(--foreground); }
+@keyframes brand-wall-marquee {
+  from { transform: translate3d(0,0,0); }
+  to { transform: translate3d(-50%,0,0); }
+}
+
+@media (max-width: 800px) {
+  .launch-copy { left: 7vw; width: 42vw; }
+  .launch-ship-title { font-size: clamp(2.6rem, 8vw, 4.8rem); }
+  .launch-points { right: 7vw; width: 40vw; gap: .65rem; }
+  .launch-word { font-size: clamp(1.35rem, 4.2vw, 2rem); }
+  .brand-wall-track { animation-duration: 24s; }
+  .brand-wall span { padding-inline: 2rem; font-size: clamp(2.5rem, 9vw, 4.5rem); }
+}
+
+/* Services word choreography: type every letter, pause, then erase every letter. */
+.services .section-heading-row h2.services-headline {
+  width: min(980px, calc(100% - 1rem));
+  font-size: clamp(4rem, 6vw, 7rem);
+  overflow: visible;
+}
+.services .service-word-swap {
+  width: 16ch;
+  min-width: 16ch;
+  max-width: none;
+  overflow: visible;
+  white-space: nowrap;
+  display: block;
+  min-height: 1.02em;
+  line-height: .84;
+}
+
+@media (max-width: 1100px) {
+  .services .section-heading-row h2.services-headline { width: min(900px, 100%); font-size: clamp(3.8rem, 6.3vw, 6.4rem); }
+}
+
+@media (max-width: 800px) {
+  .services .section-heading-row h2.services-headline { width: 100%; font-size: clamp(3.6rem, 14vw, 6.2rem); }
+  .services .service-word-swap { width: 16ch; min-width: 16ch; }
+}
+
+/* ===== v10 final visual cleanup ===== */
+/* Process background stays crisp for Six Moves, then recedes behind the cards. */
+.process-bg {
+  transition: filter .2s ease, opacity .2s ease;
+}
+
+/* Rocket scene: oversized three-line statement, firmly left of the rocket. */
+.launch-copy {
+  left: clamp(2rem, 6.5vw, 7rem) !important;
+  top: 50% !important;
+  width: min(620px, 38vw) !important;
+  transform: translateY(-50%) !important;
+  z-index: 20 !important;
+}
+.launch-ship-title {
+  display: block !important;
+  width: 100% !important;
+  font: 900 clamp(5rem, 7.2vw, 9rem) / .78 var(--font-display) !important;
+  letter-spacing: -.09em !important;
+  color: #f4f1ec !important;
+  white-space: normal !important;
+  text-wrap: balance;
+}
+.launch-ship-title em {
+  color: var(--accent-2) !important;
+  font-style: normal;
+}
+
+/* Capability list: bullets only — no left-side dashes/bars. */
+.launch-points {
+  right: clamp(2rem, 6.5vw, 7rem) !important;
+  width: min(560px, 32vw) !important;
+  gap: 1rem !important;
+  z-index: 20 !important;
+}
+.launch-word {
+  border-left: 0 !important;
+  padding-left: 0 !important;
+  font-size: clamp(2rem, 3.15vw, 3.9rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -.045em !important;
+  display: flex !important;
+  align-items: baseline;
+}
+.launch-word::before {
+  content: "" !important;
+  display: inline-block !important;
+  flex: 0 0 auto;
+  width: .22em !important;
+  height: .22em !important;
+  margin: 0 .42em 0 0 !important;
+  border-radius: 50% !important;
+  background: currentColor !important;
+  transform: none !important;
+}
+
+/* Keep the ambient launch stars/circles behind the story; the process background
+   is handled by the GSAP reveal above. */
+.launch-stage > .launch-grid,
+.launch-stage > .launch-stars,
+.launch-stage > .launch-glow {
+  z-index: 0 !important;
+}
+.launch-stage > .launch-rocket-wrap { z-index: 18 !important; }
+.launch-stage > .launch-copy,
+.launch-stage > .launch-points { z-index: 20 !important; }
+
+@media (max-width: 800px) {
+  .launch-copy {
+    left: 6vw !important;
+    width: 54vw !important;
+  }
+  .launch-ship-title {
+    font-size: clamp(3.5rem, 11vw, 5.5rem) !important;
+  }
+  .launch-points {
+    right: 5vw !important;
+    width: 38vw !important;
+    gap: .65rem !important;
+  }
+  .launch-word { font-size: clamp(1.35rem, 5vw, 2.1rem) !important; }
+}
+
+/* ===== BiduKo v11 — launch title scale correction ===== */
+.launch-copy {
+  left: clamp(1.5rem, 4vw, 4.5rem) !important;
+  width: min(700px, 42vw) !important;
+}
+.launch-ship-title {
+  font-size: clamp(6rem, 8.5vw, 10.5rem) !important;
+  line-height: .76 !important;
+  letter-spacing: -.095em !important;
+}
+@media (max-width: 1100px) {
+  .launch-copy { left: 3vw !important; width: 43vw !important; }
+  .launch-ship-title { font-size: clamp(4.8rem, 8vw, 8rem) !important; }
+}
+@media (max-width: 800px) {
+  .launch-copy { left: 5vw !important; width: 55vw !important; }
+  .launch-ship-title { font-size: clamp(3.6rem, 12vw, 6rem) !important; }
+}
+
+
+/* ===== BiduKo v12 — launch composition cleanup ===== */
+/* The launch title is intentionally removed; keep the rocket left-of-center and
+   pull the capability stack inward so the complete composition reads as one unit. */
+.launch-rocket-wrap {
+  left: 42% !important;
+}
+.launch-points {
+  left: 61% !important;
+  right: auto !important;
+  width: min(560px, 32vw) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+.launch-word {
+  font-size: clamp(2rem, 3.15vw, 3.9rem) !important;
+}
+@media (max-width: 1100px) {
+  .launch-rocket-wrap { left: 41% !important; }
+  .launch-points { left: 58% !important; width: 36vw !important; }
+}
+@media (max-width: 800px) {
+  .launch-rocket-wrap { left: 50% !important; }
+  .launch-points {
+    left: 7vw !important;
+    right: 7vw !important;
+    width: auto !important;
+    top: auto !important;
+    bottom: 8vh !important;
+    transform: none !important;
+  }
 }
