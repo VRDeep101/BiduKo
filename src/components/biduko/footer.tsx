@@ -7,7 +7,7 @@ export function Footer() {
     <footer className="site-footer">
       <div className="footer-top">
         <Link href="/" className="footer-logo">BIDUKO<span>.</span></Link>
-        <p><br /></p>
+        <p>Digital experiences for brands<br />ready to move differently.</p>
         <div className="footer-links">
           <Link href="/projects">Projects <ArrowUpRight size={13} /></Link>
           <Link href="/about">About <ArrowUpRight size={13} /></Link>

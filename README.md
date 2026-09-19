@@ -1,102 +1,36 @@
-# **BiduKo**
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-**BiduKo is a client-focused digital studio website built to present and sell professional digital services.**
-The website is designed to communicate BiduKo’s capabilities, approach, work, and creative direction while giving potential clients a clear path toward starting a project.
+## Getting Started
 
-The experience combines **premium editorial design, large-scale typography, motion graphics, scroll-driven storytelling, interactive sections, and immersive transitions** to create a strong digital-studio presence rather than a conventional agency template.
+First, run the development server:
 
-## **What BiduKo Does**
-
-BiduKo is positioned as an **end-to-end digital partner** for clients who need strategy, design, development, and ongoing digital support.
-
-The website presents services across:
-
-* **Strategy**
-* **UI/UX Design**
-* **Web Experiences**
-* **Digital Products**
-* **Brand Systems**
-* **Motion & Interaction**
-* **Engineering**
-* **Technical Support**
-
-The goal is to show clients how these disciplines work together as **one connected digital process**, from the initial idea through launch and beyond.
-
-## **Website Experience**
-
-The homepage is designed as one continuous visual story rather than a collection of disconnected sections.
-
-It includes:
-
-* **Hero & Navigation** — introduces BiduKo and directs visitors toward starting a project or exploring the work.
-* **Studio Statement** — communicates the creative philosophy and approach.
-* **Services** — presents BiduKo's core capabilities through interactive typography and motion.
-* **Selected Work** — showcases projects through an immersive project-card experience.
-* **How We Work** — explains the six-step process through scroll-driven cards and transitions.
-* **Launch Scene** — an animated rocket sequence representing taking a digital product from build to launch.
-* **Brand Collaborations** — presents the kind of brands, teams, and creative environments BiduKo works around.
-* **About BiduKo** — explains the team's disciplines, visual language, and long-term approach.
-* **Questions & Contact** — provides additional information and a final path toward working together.
-
-## **Architecture**
-
-```text
-BiduKo/
-│
-├── public/
-│   ├── projects/
-│   │   ├── project artwork
-│   │   └── case-study assets
-│   │
-│   └── static assets
-│
-├── src/
-│   │
-│   ├── app/
-│   │   ├── page.tsx
-│   │   ├── layout.tsx
-│   │   ├── globals.css
-│   │   └── project/
-│   │       └── [slug]/
-│   │           └── page.tsx
-│   │
-│   └── components/
-│       │
-│       └── biduko/
-│           ├── sections.tsx
-│           ├── site-data.ts
-│           └── BiduKo experience components
-│
-├── LICENSE
-├── README.md
-├── package.json
-└── package-lock.json
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-## **Technology**
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-The experience is built around **Next.js, React, TypeScript, GSAP, ScrollTrigger, Framer Motion and Lenis**, combining structured application architecture with a highly animated visual experience.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## **Design Direction**
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-The visual system is intentionally built around:
+## Learn More
 
-**Large editorial typography**
-**Dark futuristic environments**
-**Purple accent lighting**
-**Glass and translucent interfaces**
-**Scroll-driven storytelling**
-**Kinetic typography**
-**Interactive project presentation**
-**Cinematic transitions**
-**Responsive layouts**
+To learn more about Next.js, take a look at the following resources:
 
-The objective is to make BiduKo feel like a **digital product experience itself**, rather than simply a website describing digital services.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## **Copyright**
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-**Copyright © 2026 Deep Lambhade. All rights reserved.**
+## Deploy on Vercel
 
-The original BiduKo design, content, structure, custom components, animations, visual system, and implementation are proprietary unless otherwise noted.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Third-party libraries and dependencies remain subject to their respective licenses.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

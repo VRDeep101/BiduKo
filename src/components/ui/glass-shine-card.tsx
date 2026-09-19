@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { cn } from "@/lib/utils";
 
 export interface GlassShineCardProps {
   title: string;
@@ -20,7 +21,7 @@ export const GlassShineCard: React.FC<GlassShineCardProps> = ({
   accent = "violet",
 }) => {
   return (
-    <article className={["glass-shine-card", `glass-shine-card--${accent}`, className].filter(Boolean).join(" ")}>
+    <article className={cn("glass-shine-card", `glass-shine-card--${accent}`, className)}>
       <div className="glass-shine-card__shine" aria-hidden="true" />
       <div className="glass-shine-card__glow" aria-hidden="true" />
       <div className="glass-shine-card__graphic" aria-hidden="true">
@@ -36,3 +37,10 @@ export const GlassShineCard: React.FC<GlassShineCardProps> = ({
   );
 };
 
+export const SampleCard: React.FC = () => (
+  <GlassShineCard
+    title="Sample text"
+    description="A glass surface with a moving shine, depth and soft atmospheric glow."
+    eyebrow="Interactive card"
+  />
+);
