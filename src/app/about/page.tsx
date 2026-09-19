@@ -1,0 +1,2 @@
+import { InnerPage } from "@/components/biduko/inner-page";
+export default function AboutPage(){return <InnerPage eyebrow="02 / About" title="Small team mindset. Big digital ambition." intro="BiduKo exists to make the complicated side of digital feel simple, beautiful and considered." items={["End-to-end ownership","Design before decoration","Technology that disappears into the experience","Support that continues after launch"]}/>}
